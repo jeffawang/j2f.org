@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.1.1"><title>Setting up my Inkpalm 5</title><style></style></head> <body>  <h1>Setting up my Inkpalm 5</h1> <p><img src="/static/inkpalm5.jpeg" alt=""></p>
+<p>A few months ago, I picked up an Inkpalm 5 from ebay with the intention of carrying it every day instead of my phone.</p>
+<p>It’s about the same size and shape as a phone, and it’s remarkably lighter in weight. Now, when I would reach for my phone, I pick up this ereader. This has been great so far! However, it didn’t come out of the box quite like I wanted it. This post goes over some of the things I added and removed from the device to get it to be the minimal e-reader that I wanted it to be.</p>
+<p>This post goes over:</p>
+<ul>
+<li><a href="#adb">Installing adb</a></li>
+<li><a href="#uninstalling-bloat">Uninstalling bloat</a></li>
+<li><a href="#apps-unlauncher-anysoftkeyboard-koreader-einkbro-and-little-file-explorer">The apps I use</a></li>
+<li><a href="#managing-books">Managing books</a></li>
+<li><a href="#changing-the-lock-screen-wallpaper">Changing the lock screen wallpaper</a></li>
+</ul>
+<h2 id="adb">adb</h2>
+<p>adb is the Android Debug Bridge, a command-line tool that lets you communicate the Android device. For this project, adb serves as a quick way to remove apps from the Inkpalm and to install new apps from <code>.apk</code> files.</p>
+<p>I happen to be using macOS with brew at the moment, so I installed the <code>adb</code> command by running <code>brew install android-platform-tools</code>.</p>
+<p>For <code>adb</code> to work with the Inkpalm, I also had to enable USB debugging:</p>
+<ol>
+<li>Go to Settings > About Device</li>
+<li>Tap the <code>Build Number</code> field 7 times. This enables developer mode.</li>
+<li>Go to the newly accessible Settings > Developer Options. For me it’s in Chinese text with a wrench icon.</li>
+<li>Scroll down to the Debugging section and enable USB debugging “Debug mode when USB is connected” option.</li>
+</ol>
+<p>To test, plug in the device with its USB-C port to your computer. After a few seconds, you should get a prompt asking how to use the USB. Select the “Transferring files” option by clicking the circle next to it. This will make the device enter MTP mode.</p>
+<p>On the connected computer, run <code>adb devices</code> in a terminal to make sure that things are working. If so, then congrats, you’re a developer!</p>
+<h3 id="uninstalling-bloat">Uninstalling bloat</h3>
+<p>Since I wanted to just use the device as a relatively simple e-reader, I removed many of the things that came installed on the device. I did end up replacing some of the apps with similar apps that I prefer and are more open source.</p>
+<p>To do so, I ran the <code>adb shell</code> command. This starts an interactive prompt for interacting with the device with adb. For me, it starts a prompt that looks like this: <code>virgo-perf1:/ $ </code>.</p>
+<p>Once the shell is running, you can use some commands to uninstall apps. Below is all the stuff I removed. I’d recommend reading all the commands here and making sure that each of the packages is one you want to remove!</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.moan.appstore</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.moan.browser</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.duokan.einkreader</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.zhangyue.read.iReader.eink</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.moan.sdmanage</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 cn.wps.moffice_eng.lite</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.softwinner.dragonaging</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.softwinner.dragonfire</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.android.email</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.amazon.kindlefc</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.jd.app.reader</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.netease.snailread.ink</span></span>
+<span class="line"><span>virgo-perf1:/ $ pm uninstall --user 0 com.tencent.weread.eink</span></span></code></pre>
+<h3 id="install-f-droid">Install F-Droid</h3>
+<p>F-droid is an android app catalog for free and open source software. I feel very appreciative of everyone who maintains a FOSS project!</p>
+<p>To install it, I used the apk from online:</p>
+<ol>
+<li>Download F-Droid.apk from <a href="https://f-droid.org/en/">https://f-droid.org/en/</a></li>
+<li>Install F-Droid by running <code>adb install F-Droid.apk</code> from your downloads directory</li>
+</ol>
+<p>After unplugging your device from USB, it will exit MTP mode, and you should see the F-Droid app in the launcher.</p>
+<h3 id="apps-unlauncher-anysoftkeyboard-koreader-einkbro-and-little-file-explorer">Apps: Unlauncher, AnySoftKeyboard, KOReader, EinkBro, and Little File Explorer</h3>
+<p>To install stuff with F-Droid, you will need to connect the device to wifi by swiping down from the top of the screen and tapping and holding the wifi icon. And when you launch F-Droid, it will update repositories. The Inkpalm also will make sure you want to install things from there with a prompt. Enable it by clicking “Allow from this source”.</p>
+<h4 id="unlauncher">Unlauncher</h4>
+<p>Unlauncher is the minimal app launcher for Android that I prefer. The Inkpalm 5 does not seem to support backgrounds, and many launchers would give me unusable fully black screens because they were meant for android phones rather than limited e-readers like the Inkpalm.</p>
+<p>With Unlauncher, you can configure a minimal set of apps to show on the home screen, and you can always access an app drawer by swiping up. KOReader is the one app on my home screen.</p>
+<p>I think it would technically be possible to remove the original app launcher, but I keep it around just in case I need it. In any case, it’s not on my Unlauncher apps</p>
+<h4 id="anysoftkeyboard">AnySoftKeyboard</h4>
+<p>AnySoftKeyboard is a pretty basic Android keyboard that I use. I don’t need anything fancy, and the default one asked for a network permissions, which made me suspicious of it.</p>
+<p>After installing this keyboard and making it the default, I uninstalled the old input method via adb with <code>pm uninstall --user 0 com.sohu.inputmethod.sogou.oem</code>.</p>
+<h4 id="koreader">KOReader</h4>
+<p>KOReader is the only app I have on my Unlauncher homescreen.</p>
+<p>It is highly configurable, and it supports changing the page via tapping on sections of the screen, swiping left and right, and the volume buttons. It also has a file browser that makes sense to me, and it supports looking up words in a configurable set of dictionaries.</p>
+<p>I ended up spent a couple hours browsing through the options and getting it to a configuration that I like. Maybe I’ll make a post about this in the future.</p>
+<h4 id="einkbro">EinkBro</h4>
+<p>EinkBro is a web browser for eink devices. I have it installed on my Inkpalm for emergencies, but I keep it off my main screen to avoid distraction.</p>
+<h4 id="little-file-explorer">Little File Explorer</h4>
+<p>Little File Explorer is exactly what its name suggests. Especially as I was testing out different e-reader apps, I wanted a way to look at files quickly and simply. These days, I don’t find much need for it and just use the KOReader file management.</p>
+<h2 id="managing-books">Managing books</h2>
+<p>To manage ebooks on the Inkpalm, I use Calibre. Connect the device over USB, setting it to File Transfer mode. Calibre can detect it and send files to the device, much like it would do with other commercial e-readers.</p>
+<h2 id="changing-the-lock-screen-wallpaper">Changing the lock screen wallpaper</h2>
+<p>To change the lock screen wallpaper, upload an image to the device with <code>adb</code>.</p>
+<ol>
+<li>Upload an image by running <code>adb push &#x3C;filename> /storage/emulated/0/Wallpaper/&#x3C;filename></code>
+<ol>
+<li>For example, to upload a file called <code>rind.png</code>, run <code>adb push rind.png /storage/emulated/0/Wallpaper/rind.png</code></li>
+</ol>
+</li>
+<li>Use the oem settings app to change the wallpaper
+<ol>
+<li>From the Unlauncher app drawer, run the original Launcher</li>
+<li>Tap Settings (which has a hardware nut icon)</li>
+<li>Go to Device Settings > Wallpaper</li>
+<li>Select a wallpaper. The image you uploaded should be there.</li>
+</ol>
+</li>
+</ol>  </body></html>
